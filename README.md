@@ -2,15 +2,11 @@
 
 A CLI that measures repository health.
 
----
-
 ## Install
 
 ```bash
 pip install repometrics
 ```
-
----
 
 ## Usage
 
@@ -19,8 +15,6 @@ repometrics scan
 repometrics scan --days 60
 repometrics scan --json
 ```
-
----
 
 ## Example
 
@@ -33,8 +27,6 @@ Git Activity:  72
 Hygiene:       75
 ```
 
----
-
 ## Philosophy
 
 Deterministic.  
@@ -42,6 +34,6 @@ Read-only.
 CI-friendly.  
 Python-first..
 
----
+## License
 
 MIT
