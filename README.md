@@ -1,8 +1,11 @@
 # repometrics
 
-A deterministic CLI for measuring Python repository health.
+[![PyPI](https://img.shields.io/pypi/v/repository-metrics-cli?logo=pypi&logoColor=white)](https://pypi.org/project/repository-metrics-cli/)
+[![Python](https://img.shields.io/pypi/pyversions/repository-metrics-cli?logo=python&logoColor=white)](https://pypi.org/project/repository-metrics-cli/)
+[![CI](https://img.shields.io/github/actions/workflow/status/tyeoh9/repometrics/ci.yml?branch=main&logo=githubactions&logoColor=white)](https://github.com/tyeoh9/repometrics/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/tyeoh9/repometrics)](LICENSE)
 
-PyPI: https://pypi.org/project/repository-metrics-cli/
+A deterministic CLI for measuring Python repository health.
 
 ```bash
 pip install repository-metrics-cli
