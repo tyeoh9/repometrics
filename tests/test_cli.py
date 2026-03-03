@@ -24,8 +24,8 @@ def test_cli_text_output_includes_category_sections(capsys) -> None:
     assert lines[0] == ""
     assert lines[1].startswith("score=")
     assert "threshold=70.00  path=" in captured.out
-    assert "Category        |  Score" in captured.out
-    assert "---------------+-------" in captured.out
+    assert "Category         |  Score" in captured.out
+    assert "----------------+-------" in captured.out
     assert "Final" in captured.out
     assert "total_py_files" not in captured.out
 
@@ -33,8 +33,10 @@ def test_cli_text_output_includes_category_sections(capsys) -> None:
 def test_cli_verbose_text_output_includes_full_metrics(capsys) -> None:
     exit_code = main(["check", "--path", str(Path.cwd()), "--days", "30", "--verbose", "--no-color"])
     captured = capsys.readouterr()
+    lines = captured.out.splitlines()
 
     assert exit_code == 0
+    assert lines[0] == ""
     assert "Category Metrics" in captured.out
     assert "Structure" in captured.out
     assert "total_py_files" in captured.out

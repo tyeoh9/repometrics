@@ -12,7 +12,7 @@ from repometrics.scanner import scan
 from repometrics.scoring import compute
 
 BAR_WIDTH = 16
-CATEGORY_WIDTH = 15
+CATEGORY_WIDTH = 16
 SCORE_WIDTH = 6
 ANSI_RESET = "\033[0m"
 ANSI_GREEN = "\033[32m"
@@ -151,7 +151,7 @@ def _render_score_table(score: dict, use_color: bool) -> list[str]:
         ("Hygiene", score["category_scores"].get("hygiene", "n/a")),
         ("Final", score.get("final_score", "n/a")),
     ]
-    divider_text = "---------------+-------"
+    divider_text = "----------------+-------"
     if use_color:
         header_category = _colorize("Category", ANSI_GRAY, use_color)
         header_score = _colorize("Score", ANSI_GRAY, use_color)
@@ -214,7 +214,7 @@ def _render_text_verbose(
     health_color = ANSI_GREEN if healthy else ANSI_AMBER
 
     lines = [
-        _colorize("repometrics check", ANSI_GREEN, use_color),
+        "",
         f"path: {metrics['path']}",
         f"days: {metrics['days']}",
         f"final_score: {_colorize(f'{final_score:.2f}', ANSI_GREEN, use_color)}",
