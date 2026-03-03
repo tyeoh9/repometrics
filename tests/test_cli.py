@@ -23,7 +23,7 @@ def test_cli_text_output_includes_category_sections(capsys) -> None:
     assert captured.out.splitlines()[0] == "repometrics check"
     assert "score=" in captured.out
     assert "threshold=70.00  path=" in captured.out
-    assert "Category       | Score" in captured.out
+    assert "Category        |  Score" in captured.out
     assert "---------------+-------" in captured.out
     assert "Final" in captured.out
     assert "total_py_files" not in captured.out
