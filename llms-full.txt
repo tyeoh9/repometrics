@@ -1,0 +1,116 @@
+# repometrics (Full Agent Reference)
+
+## What It Does
+
+`repometrics` analyzes a local Python repository and outputs deterministic:
+- category metrics
+- category scores
+- final score
+- health status for automation
+
+No network calls. Read-only analysis.
+
+## Install
+
+```bash
+pip install repometrics
+```
+
+## Commands
+
+Primary command:
+
+```bash
+repometrics check
+```
+
+Compatibility alias:
+
+```bash
+repometrics scan
+```
+
+## Flags
+
+```bash
+repometrics check \
+  [--path DIR] \
+  [--days N] \
+  [--json] \
+  [--min-score N] \
+  [--confirm-test-matches] \
+  [--no-color]
+```
+
+- `--path`: target directory (default `.`)
+- `--days`: git window in days (default `30`)
+- `--json`: emit machine-readable JSON
+- `--min-score`: health threshold (default `70`, range `0..100`)
+- `--confirm-test-matches`: interactive confirmation for ambiguous non-`test_*` test matches
+- `--no-color`: disable ANSI colors in text mode
+
+## Exit Codes
+
+- `0`: healthy (`final_score >= min_score`)
+- `1`: unhealthy (`final_score < min_score`)
+- `2`: runtime/validation error
+
+## JSON Output Format
+
+Top-level keys:
+- `schema_version`
+- `path`
+- `days`
+- `generated_at`
+- `categories`
+- `scoring`
+- `healthy`
+- `min_score`
+- `exit_code`
+- `warnings`
+- `errors`
+
+`categories` contains:
+- `structure`
+- `dependencies`
+- `git`
+- `hygiene`
+
+Each category has:
+- `status` (`ok`, `partial`, `unavailable`)
+- `metrics`
+- `warnings`
+- `errors`
+
+`scoring` contains:
+- `category_scores`
+- `weights_used`
+- `final_score`
+
+## Minimal JSON Example
+
+```bash
+repometrics check --json --min-score 75
+```
+
+## Text Output Notes
+
+- Includes final score summary and threshold/health
+- Includes per-category metric sections
+- Includes colored score bar (red/yellow/green bands)
+- Color auto-disables in non-TTY; use `--no-color` to force plain output
+
+## Common Agent Workflows
+
+Health gate in CI/automation:
+
+```bash
+repometrics check --json --min-score 80
+```
+
+Parse result:
+- use process exit code for pass/fail branch logic
+- use JSON fields (`healthy`, `scoring.final_score`, `categories.*`) for diagnostics
+
+Backwards compatibility:
+- agents may call `repometrics scan`, but `check` is canonical
