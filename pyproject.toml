@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "repometrics"
+version = "0.1.0"
+description = "Deterministic repository health metrics for Python projects."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "repometrics contributors" }]
+dependencies = [
+  "networkx>=3.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+]
+
+[project.scripts]
+repometrics = "repometrics.cli:main"
+
+[tool.setuptools]
+packages = ["repometrics", "repometrics.metrics"]

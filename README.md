@@ -13,7 +13,25 @@ pip install repometrics
 ```bash
 repometrics scan
 repometrics scan --days 60
+repometrics scan --path /path/to/repo
 repometrics scan --json
+repometrics scan --confirm-test-matches
+```
+
+## JSON Output
+
+`--json` returns a stable, versioned payload with:
+- metadata (`schema_version`, `path`, `days`, `generated_at`)
+- category results (`structure`, `dependencies`, `git`, `hygiene`) including status, metrics, warnings, errors
+- scoring (`category_scores`, `weights_used`, `final_score`)
+- top-level warnings and errors
+
+## Development
+
+Run tests:
+
+```bash
+python3 -m pytest -q
 ```
 
 ## Example
@@ -32,7 +50,7 @@ Hygiene:       75
 Deterministic.  
 Read-only.  
 CI-friendly.  
-Python-first..
+Python-first.
 
 ## License
 
