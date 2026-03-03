@@ -13,7 +13,9 @@ pip install repometrics
 ```bash
 repometrics scan
 repometrics scan --days 60
+repometrics scan --path /path/to/repo
 repometrics scan --json
+repometrics scan --confirm-test-matches
 ```
 
 ## Example
@@ -32,7 +34,7 @@ Hygiene:       75
 Deterministic.  
 Read-only.  
 CI-friendly.  
-Python-first..
+Python-first.
 
 ## License
 
