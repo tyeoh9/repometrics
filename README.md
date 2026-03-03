@@ -1,8 +1,8 @@
 # repometrics
 
-[![PyPI](https://img.shields.io/pypi/v/repository-metrics-cli?logo=pypi&logoColor=white)](https://pypi.org/project/repository-metrics-cli/)
-[![Python](https://img.shields.io/pypi/pyversions/repository-metrics-cli?logo=python&logoColor=white)](https://pypi.org/project/repository-metrics-cli/)
-[![CI](https://img.shields.io/github/actions/workflow/status/tyeoh9/repometrics/ci.yml?branch=main&logo=githubactions&logoColor=white)](https://github.com/tyeoh9/repometrics/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/repository-metrics-cli?logo=pypi)](https://pypi.org/project/repository-metrics-cli/)
+[![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python)](https://www.python.org/)
+[![CI](https://img.shields.io/github/actions/workflow/status/tyeoh9/repometrics/ci.yml?branch=main&logo=githubactions)](https://github.com/tyeoh9/repometrics/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/tyeoh9/repometrics)](LICENSE)
 
 A deterministic CLI for measuring Python repository health.

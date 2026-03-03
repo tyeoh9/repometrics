@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.3 - 2026-03-03
+
+- Updated README badges:
+  - removed white logo overrides
+  - replaced fragile PyPI `pyversions` badge with stable `python-3.10+` badge
+- Packaging refresh release so PyPI project page can reflect the updated README.
+
 ## 0.2.2 - 2026-03-03
 
 - Follow-up release packaging cut for latest CLI UX/formatting refinements.
