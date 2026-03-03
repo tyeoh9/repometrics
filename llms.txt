@@ -1,0 +1,12 @@
+# repometrics (Agent Quick Guide)
+
+`repometrics` checks Python repository health with deterministic metrics and scoring.
+
+- README: [/Users/thomasyeoh/repos/repometrics/README.md](/Users/thomasyeoh/repos/repometrics/README.md)
+- CLI reference: [/Users/thomasyeoh/repos/repometrics/README.md](/Users/thomasyeoh/repos/repometrics/README.md) (CLI Reference section)
+
+Quickstart:
+
+```bash
+repometrics check --json
+```

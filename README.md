@@ -1,56 +1,58 @@
 # repometrics
 
-A CLI that measures repository health.
-
-## Install
+A deterministic CLI for measuring Python repository health.
 
 ```bash
 pip install repometrics
+repometrics check
 ```
 
-## Usage
+## Quickstart
 
 ```bash
-repometrics scan
-repometrics scan --days 60
-repometrics scan --path /path/to/repo
-repometrics scan --json
-repometrics scan --confirm-test-matches
+repometrics check --path /path/to/repo
+repometrics check --json
 ```
 
-## JSON Output
+`scan` is kept as a backward-compatible alias for `check`.
 
-`--json` returns a stable, versioned payload with:
-- metadata (`schema_version`, `path`, `days`, `generated_at`)
-- category results (`structure`, `dependencies`, `git`, `hygiene`) including status, metrics, warnings, errors
-- scoring (`category_scores`, `weights_used`, `final_score`)
-- top-level warnings and errors
+## CLI Reference
+
+Primary command:
+
+```bash
+repometrics check [--path DIR] [--days N] [--json] [--min-score N] [--confirm-test-matches] [--no-color]
+```
+
+Important flags:
+- `--json`: machine-readable output
+- `--min-score`: health threshold (default `70`)
+- `--no-color`: disable ANSI colors in terminal output
+- `--confirm-test-matches`: interactive confirmation for ambiguous non-`test_*` matches
+
+## Exit Codes
+
+- `0`: healthy (`final_score >= min_score`)
+- `1`: unhealthy (`final_score < min_score`)
+- `2`: runtime/validation error
+
+## Agent-Friendly Usage
+
+- Stable JSON payload (`schema_version`, category metrics, scoring, warnings/errors)
+- Additive health fields: `healthy`, `min_score`, `exit_code`
+- Exit codes enable CI/agent decisions without parsing human-formatted text
+
+Minimal JSON example:
+
+```bash
+repometrics check --json --min-score 75
+```
 
 ## Development
-
-Run tests:
 
 ```bash
 python3 -m pytest -q
 ```
-
-## Example
-
-```text
-Repo Health Score: 74 / 100
-
-Structure:     68
-Dependencies:  80
-Git Activity:  72
-Hygiene:       75
-```
-
-## Philosophy
-
-Deterministic.  
-Read-only.  
-CI-friendly.  
-Python-first.
 
 ## License
 
