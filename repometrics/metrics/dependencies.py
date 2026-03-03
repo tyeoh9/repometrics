@@ -67,11 +67,23 @@ def analyze(path: Path, config: ScanConfig) -> CategoryResult[DependencyMetrics]
             elif isinstance(node, ast.ImportFrom):
                 if node.level > 0:
                     resolved = _resolve_relative(node.module, node.level, module_name)
-                    target = _resolve_known_module(resolved, known_modules)
                 else:
-                    target = _resolve_known_module(node.module or "", known_modules)
-                if target and target != module_name:
-                    graph.add_edge(module_name, target)
+                    resolved = node.module or ""
+
+                base_target = _resolve_known_module(resolved, known_modules)
+                alias_targets: set[str] = set()
+                for alias in node.names:
+                    if alias.name == "*":
+                        continue
+                    candidate = f"{resolved}.{alias.name}" if resolved else alias.name
+                    target = _resolve_known_module(candidate, known_modules)
+                    if target:
+                        alias_targets.add(target)
+
+                targets = alias_targets or ({base_target} if base_target else set())
+                for target in targets:
+                    if target != module_name:
+                        graph.add_edge(module_name, target)
 
     cycle_count = 0
     for component in nx.strongly_connected_components(graph):
