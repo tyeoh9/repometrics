@@ -21,14 +21,20 @@ repometrics check --json
 Primary command:
 
 ```bash
-repometrics check [--path DIR] [--days N] [--json] [--min-score N] [--confirm-test-matches] [--no-color]
+repometrics check [--path DIR] [--days N] [--json] [--verbose] [--min-score N] [--confirm-test-matches] [--no-color]
 ```
 
 Important flags:
 - `--json`: machine-readable output
+- `--verbose`: full category metrics and warnings/errors
 - `--min-score`: health threshold (default `70`)
 - `--no-color`: disable ANSI colors in terminal output
 - `--confirm-test-matches`: interactive confirmation for ambiguous non-`test_*` matches
+
+Text modes:
+- default: compact summary + small score table
+- `--verbose`: full stats view
+- `--json`: programmatic full detail
 
 ## Exit Codes
 

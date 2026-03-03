@@ -20,10 +20,21 @@ def test_cli_text_output_includes_category_sections(capsys) -> None:
     captured = capsys.readouterr()
 
     assert exit_code == 0
+    assert "repometrics check  score=" in captured.out
+    assert "threshold=70.00  path=" in captured.out
+    assert "Category       Score" in captured.out
+    assert "Final" in captured.out
+    assert "total_py_files" not in captured.out
+
+
+def test_cli_verbose_text_output_includes_full_metrics(capsys) -> None:
+    exit_code = main(["check", "--path", str(Path.cwd()), "--days", "30", "--verbose", "--no-color"])
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
     assert "Category Metrics" in captured.out
     assert "Structure" in captured.out
-    assert "Dependencies" in captured.out
-    assert "Scores" in captured.out
+    assert "total_py_files" in captured.out
     assert "score_bar:" in captured.out
 
 
@@ -86,8 +97,8 @@ def test_cli_score_bar_color_and_no_color(monkeypatch, capsys) -> None:
     main(["check", "--path", str(Path.cwd()), "--days", "30"])
     colored = capsys.readouterr().out
 
-    main(["check", "--path", str(Path.cwd()), "--days", "30", "--no-color"])
-    plain = capsys.readouterr().out
+    main(["check", "--path", str(Path.cwd()), "--days", "30", "--no-color", "--verbose"])
+    plain_verbose = capsys.readouterr().out
 
     assert "\x1b[" in colored
-    assert "\x1b[" not in plain
+    assert "\x1b[" not in plain_verbose

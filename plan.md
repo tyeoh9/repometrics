@@ -64,6 +64,7 @@ Supported options:
 - `--path <dir>` (default: `.`)
 - `--days <int>` (default: `30`)
 - `--json` (machine output)
+- `--verbose` (full text stats)
 - `--min-score <float>` (default: `70`, range `0..100`)
 - `--confirm-test-matches` (interactive hygiene fallback)
 - `--no-color` (disable ANSI colors in text mode)
@@ -78,15 +79,10 @@ Supported options:
 
 ## Text Output
 
-- Header with path, days, final score, threshold, health
-- Colored score bar (ANSI; auto-disabled on non-TTY; forced off by `--no-color`)
-- Category sections with status, metrics, warnings/errors
-- Score summary and top-level warnings/errors
-
-Color bands:
-- red: `0..49`
-- yellow: `50..69`
-- green: `70..100`
+- Default mode (`check`): compact summary (2 lines) + small score table
+- Verbose mode (`check --verbose`): full category metrics, statuses, warnings/errors
+- Minimal cool-tone ANSI styling (cyan/blue/gray with amber unhealthy state)
+- ANSI auto-disabled on non-TTY, forced off by `--no-color`
 
 ## JSON Output
 
