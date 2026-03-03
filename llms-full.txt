@@ -37,6 +37,7 @@ repometrics check \
   [--path DIR] \
   [--days N] \
   [--json] \
+  [--verbose] \
   [--min-score N] \
   [--confirm-test-matches] \
   [--no-color]
@@ -45,6 +46,7 @@ repometrics check \
 - `--path`: target directory (default `.`)
 - `--days`: git window in days (default `30`)
 - `--json`: emit machine-readable JSON
+- `--verbose`: emit full category metrics in text mode
 - `--min-score`: health threshold (default `70`, range `0..100`)
 - `--confirm-test-matches`: interactive confirmation for ambiguous non-`test_*` test matches
 - `--no-color`: disable ANSI colors in text mode
@@ -95,9 +97,9 @@ repometrics check --json --min-score 75
 
 ## Text Output Notes
 
-- Includes final score summary and threshold/health
-- Includes per-category metric sections
-- Includes colored score bar (red/yellow/green bands)
+- Default text mode is compact: summary + small score table
+- `--verbose` shows full category metrics/warnings/errors
+- Includes subtle cool-tone ANSI accents and compact score bar
 - Color auto-disables in non-TTY; use `--no-color` to force plain output
 
 ## Common Agent Workflows
