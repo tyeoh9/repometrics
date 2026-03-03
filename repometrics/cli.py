@@ -113,8 +113,8 @@ def _colorize(text: str, color: str, use_color: bool) -> str:
 
 def _render_score_bar(score: float, use_color: bool) -> str:
     filled = max(0, min(BAR_WIDTH, int(round((score / 100.0) * BAR_WIDTH))))
-    filled_part = "■" * filled
-    empty_part = "·" * (BAR_WIDTH - filled)
+    filled_part = "#" * filled
+    empty_part = "-" * (BAR_WIDTH - filled)
     if not use_color:
         return f"{filled_part}{empty_part}"
     return f"{_colorize(filled_part, ANSI_BLUE, use_color)}{_colorize(empty_part, ANSI_GRAY, use_color)}"
@@ -150,13 +150,21 @@ def _render_score_table(score: dict, use_color: bool) -> list[str]:
         ("Hygiene", score["category_scores"].get("hygiene", "n/a")),
         ("Final", score.get("final_score", "n/a")),
     ]
+    if use_color:
+        header_category = _colorize("Category", ANSI_GRAY, use_color)
+        header_score = _colorize("Score", ANSI_GRAY, use_color)
+        divider = _colorize("---------------+-------", ANSI_GRAY, use_color)
+    else:
+        header_category = "Category"
+        header_score = "Score"
+        divider = "---------------+-------"
     lines = [
-        f"{_colorize('Category', ANSI_GRAY, use_color):<14} {_colorize('Score', ANSI_GRAY, use_color)}",
-        f"{_colorize('------------', ANSI_GRAY, use_color):<14} {_colorize('------', ANSI_GRAY, use_color)}",
+        f"{header_category:<14} | {header_score:>5}",
+        divider,
     ]
     for name, value in rows:
         rendered = f"{value:.2f}" if isinstance(value, float) else str(value)
-        lines.append(f"{name:<14} {rendered}")
+        lines.append(f"{name:<14} | {rendered:>6}")
     return lines
 
 
@@ -176,7 +184,8 @@ def _render_text_compact(
     health_value = _colorize(health_state, health_color, use_color)
 
     lines = [
-        f"repometrics check  score={score_value}  {score_bar}  health={health_value}",
+        "repometrics check",
+        f"score={score_value}  {score_bar}  health={health_value}",
         f"threshold={min_score:.2f}  path={metrics['path']}",
         "",
         *_render_score_table(score, use_color),
