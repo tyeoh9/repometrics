@@ -5,6 +5,7 @@ import json
 import sys
 from dataclasses import asdict
 from pathlib import Path
+from typing import Any
 
 from repometrics import __version__
 from repometrics.scanner import scan
@@ -39,19 +40,77 @@ def _validate_args(args: argparse.Namespace) -> None:
         raise ValueError(f"--path is not a directory: {args.path}")
 
 
+def _format_metric_value(value: Any) -> str:
+    if isinstance(value, float):
+        return f"{value:.2f}"
+    if isinstance(value, list):
+        if not value:
+            return "[]"
+        rendered = ", ".join(str(item) for item in value[:5])
+        suffix = " ..." if len(value) > 5 else ""
+        return f"[{rendered}{suffix}]"
+    if isinstance(value, dict):
+        if not value:
+            return "{}"
+        items = list(value.items())[:5]
+        rendered = ", ".join(f"{key}={val}" for key, val in items)
+        suffix = " ..." if len(value) > 5 else ""
+        return f"{{{rendered}{suffix}}}"
+    return str(value)
+
+
+def _render_category(name: str, category: dict, score: dict) -> list[str]:
+    lines = [f"{name}"]
+    lines.append(f"  status: {category['status']}")
+    lines.append(f"  score: {score['category_scores'].get(name.lower(), 'n/a')}")
+    metrics = category.get("metrics")
+    if metrics:
+        lines.append("  metrics:")
+        for key in sorted(metrics):
+            lines.append(f"    {key}: {_format_metric_value(metrics[key])}")
+    category_warnings = category.get("warnings", [])
+    category_errors = category.get("errors", [])
+    if category_warnings:
+        lines.append("  warnings:")
+        for warning in category_warnings:
+            lines.append(f"    - {warning}")
+    if category_errors:
+        lines.append("  errors:")
+        for error in category_errors:
+            lines.append(f"    - {error}")
+    return lines
+
+
 def _render_text(metrics: dict, score: dict) -> str:
     lines = [
-        f"repometrics scan",
+        "repometrics scan",
         f"path: {metrics['path']}",
         f"days: {metrics['days']}",
         "",
-        "Scores",
-        f"  Structure:    {score['category_scores'].get('structure', 'n/a')}",
-        f"  Dependencies: {score['category_scores'].get('dependencies', 'n/a')}",
-        f"  Git:          {score['category_scores'].get('git', 'n/a')}",
-        f"  Hygiene:      {score['category_scores'].get('hygiene', 'n/a')}",
-        f"  Final:        {score['final_score']}",
+        "Category Metrics",
     ]
+    categories = {
+        "Structure": metrics["structure"],
+        "Dependencies": metrics["dependencies"],
+        "Git": metrics["git"],
+        "Hygiene": metrics["hygiene"],
+    }
+    for index, (name, category) in enumerate(categories.items()):
+        lines.extend(_render_category(name, category, score))
+        if index < len(categories) - 1:
+            lines.append("")
+
+    lines.extend(
+        [
+            "",
+            "Scores",
+            f"  Structure:    {score['category_scores'].get('structure', 'n/a')}",
+            f"  Dependencies: {score['category_scores'].get('dependencies', 'n/a')}",
+            f"  Git:          {score['category_scores'].get('git', 'n/a')}",
+            f"  Hygiene:      {score['category_scores'].get('hygiene', 'n/a')}",
+            f"  Final:        {score['final_score']}",
+        ]
+    )
     warnings = metrics.get("warnings", [])
     errors = metrics.get("errors", [])
     if warnings or errors:
