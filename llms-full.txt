@@ -10,10 +10,12 @@
 
 No network calls. Read-only analysis.
 
+PyPI project: https://pypi.org/project/repository-metrics-cli/
+
 ## Install
 
 ```bash
-pip install repometrics
+pip install repository-metrics-cli
 ```
 
 ## Commands
