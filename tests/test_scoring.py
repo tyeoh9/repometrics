@@ -85,3 +85,15 @@ def test_compute_scores_in_range() -> None:
 
     assert 0 <= result.final_score <= 100
     assert set(result.category_scores) == {"structure", "dependencies", "git", "hygiene"}
+    assert sum(result.weights_used.values()) == 100.0
+
+
+def test_compute_weights_sum_exactly_to_hundred() -> None:
+    report = _base_report()
+    report.structure = CategoryResult(status="unavailable", metrics=None, warnings=["skip"])
+    report.git = CategoryResult(status="unavailable", metrics=None, warnings=["skip"])
+
+    result = compute(report)
+
+    assert result.weights_used == {"dependencies": 60.0, "hygiene": 40.0}
+    assert sum(result.weights_used.values()) == 100.0
