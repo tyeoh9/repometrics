@@ -2,8 +2,10 @@
 
 A deterministic CLI for measuring Python repository health.
 
+PyPI: https://pypi.org/project/repository-metrics-cli/
+
 ```bash
-pip install repometrics
+pip install repository-metrics-cli
 repometrics check
 ```
 
