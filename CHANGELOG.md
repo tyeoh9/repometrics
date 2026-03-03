@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.1 - 2026-03-03
+
+- Refined compact CLI output formatting and alignment.
+- Added cleaner ASCII score bar rendering for consistent terminal spacing.
+- Adjusted compact score table header/divider widths for strict column alignment.
+- Removed command title line from compact and verbose output (leading blank line style).
+- Polished verbose output layout consistency with compact mode expectations.
+
 ## 0.2.0 - 2026-03-03
 
 - Added compact default `repometrics check` terminal output.
