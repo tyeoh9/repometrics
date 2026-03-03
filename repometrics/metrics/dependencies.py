@@ -29,10 +29,18 @@ def _resolve_known_module(name: str, known_modules: set[str]) -> str | None:
     return None
 
 
-def _resolve_relative(module: str | None, level: int, current_module: str) -> str:
+def _resolve_relative(
+    module: str | None,
+    level: int,
+    current_module: str,
+    is_package_module: bool,
+) -> str:
     base_parts = current_module.split(".")
-    if level > 0:
-        base_parts = base_parts[:-level]
+    ascend = level
+    if is_package_module and level > 0:
+        ascend = level - 1
+    if ascend > 0:
+        base_parts = base_parts[:-ascend]
     module_parts = module.split(".") if module else []
     all_parts = [part for part in [*base_parts, *module_parts] if part]
     return ".".join(all_parts)
@@ -51,6 +59,7 @@ def analyze(path: Path, config: ScanConfig) -> CategoryResult[DependencyMetrics]
     for file_path, module_name in modules.items():
         if not module_name:
             continue
+        is_package_module = file_path.name == "__init__.py"
         try:
             source = file_path.read_text(encoding="utf-8")
             tree = ast.parse(source, filename=str(file_path))
@@ -66,7 +75,12 @@ def analyze(path: Path, config: ScanConfig) -> CategoryResult[DependencyMetrics]
                         graph.add_edge(module_name, target)
             elif isinstance(node, ast.ImportFrom):
                 if node.level > 0:
-                    resolved = _resolve_relative(node.module, node.level, module_name)
+                    resolved = _resolve_relative(
+                        node.module,
+                        node.level,
+                        module_name,
+                        is_package_module=is_package_module,
+                    )
                 else:
                     resolved = node.module or ""
 
