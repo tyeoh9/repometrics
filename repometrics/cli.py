@@ -12,9 +12,10 @@ from repometrics.scanner import scan
 from repometrics.scoring import compute
 
 BAR_WIDTH = 16
+CATEGORY_WIDTH = 15
+SCORE_WIDTH = 6
 ANSI_RESET = "\033[0m"
-ANSI_CYAN = "\033[36m"
-ANSI_BLUE = "\033[94m"
+ANSI_GREEN = "\033[32m"
 ANSI_GRAY = "\033[90m"
 ANSI_AMBER = "\033[33m"
 
@@ -117,7 +118,7 @@ def _render_score_bar(score: float, use_color: bool) -> str:
     empty_part = "-" * (BAR_WIDTH - filled)
     if not use_color:
         return f"{filled_part}{empty_part}"
-    return f"{_colorize(filled_part, ANSI_BLUE, use_color)}{_colorize(empty_part, ANSI_GRAY, use_color)}"
+    return f"{_colorize(filled_part, ANSI_GREEN, use_color)}{_colorize(empty_part, ANSI_GRAY, use_color)}"
 
 
 def _render_category(name: str, category: dict, score: dict) -> list[str]:
@@ -150,21 +151,22 @@ def _render_score_table(score: dict, use_color: bool) -> list[str]:
         ("Hygiene", score["category_scores"].get("hygiene", "n/a")),
         ("Final", score.get("final_score", "n/a")),
     ]
+    divider_text = "---------------+-------"
     if use_color:
         header_category = _colorize("Category", ANSI_GRAY, use_color)
         header_score = _colorize("Score", ANSI_GRAY, use_color)
-        divider = _colorize("---------------+-------", ANSI_GRAY, use_color)
+        divider = _colorize(divider_text, ANSI_GRAY, use_color)
     else:
         header_category = "Category"
         header_score = "Score"
-        divider = "---------------+-------"
+        divider = divider_text
     lines = [
-        f"{header_category:<14} | {header_score:>5}",
+        f"{header_category:<{CATEGORY_WIDTH}} | {header_score:>{SCORE_WIDTH}}",
         divider,
     ]
     for name, value in rows:
         rendered = f"{value:.2f}" if isinstance(value, float) else str(value)
-        lines.append(f"{name:<14} | {rendered:>6}")
+        lines.append(f"{name:<{CATEGORY_WIDTH}} | {rendered:>{SCORE_WIDTH}}")
     return lines
 
 
@@ -179,12 +181,12 @@ def _render_text_compact(
     use_color = _supports_color(no_color)
     score_bar = _render_score_bar(final_score, use_color)
     health_state = "healthy" if healthy else "unhealthy"
-    health_color = ANSI_CYAN if healthy else ANSI_AMBER
-    score_value = _colorize(f"{final_score:.2f}", ANSI_CYAN, use_color)
+    health_color = ANSI_GREEN if healthy else ANSI_AMBER
+    score_value = _colorize(f"{final_score:.2f}", ANSI_GREEN, use_color)
     health_value = _colorize(health_state, health_color, use_color)
 
     lines = [
-        "repometrics check",
+        "",
         f"score={score_value}  {score_bar}  health={health_value}",
         f"threshold={min_score:.2f}  path={metrics['path']}",
         "",
@@ -209,13 +211,13 @@ def _render_text_verbose(
     use_color = _supports_color(no_color)
     score_bar = _render_score_bar(final_score, use_color)
     health_state = "healthy" if healthy else "unhealthy"
-    health_color = ANSI_CYAN if healthy else ANSI_AMBER
+    health_color = ANSI_GREEN if healthy else ANSI_AMBER
 
     lines = [
-        _colorize("repometrics check", ANSI_CYAN, use_color),
+        _colorize("repometrics check", ANSI_GREEN, use_color),
         f"path: {metrics['path']}",
         f"days: {metrics['days']}",
-        f"final_score: {_colorize(f'{final_score:.2f}', ANSI_CYAN, use_color)}",
+        f"final_score: {_colorize(f'{final_score:.2f}', ANSI_GREEN, use_color)}",
         f"threshold: {min_score:.2f}",
         f"health: {_colorize(health_state, health_color, use_color)}",
         f"score_bar: {score_bar}",
