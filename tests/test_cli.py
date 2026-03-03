@@ -18,10 +18,11 @@ def test_cli_rejects_invalid_days() -> None:
 def test_cli_text_output_includes_category_sections(capsys) -> None:
     exit_code = main(["check", "--path", str(Path.cwd()), "--days", "30", "--no-color"])
     captured = capsys.readouterr()
+    lines = captured.out.splitlines()
 
     assert exit_code == 0
-    assert captured.out.splitlines()[0] == "repometrics check"
-    assert "score=" in captured.out
+    assert lines[0] == ""
+    assert lines[1].startswith("score=")
     assert "threshold=70.00  path=" in captured.out
     assert "Category        |  Score" in captured.out
     assert "---------------+-------" in captured.out

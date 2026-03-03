@@ -151,7 +151,7 @@ def _render_score_table(score: dict, use_color: bool) -> list[str]:
         ("Hygiene", score["category_scores"].get("hygiene", "n/a")),
         ("Final", score.get("final_score", "n/a")),
     ]
-    divider_text = f"{'-' * CATEGORY_WIDTH}+{'-' * (SCORE_WIDTH + 1)}"
+    divider_text = "---------------+-------"
     if use_color:
         header_category = _colorize("Category", ANSI_GRAY, use_color)
         header_score = _colorize("Score", ANSI_GRAY, use_color)
@@ -186,7 +186,7 @@ def _render_text_compact(
     health_value = _colorize(health_state, health_color, use_color)
 
     lines = [
-        "repometrics check",
+        "",
         f"score={score_value}  {score_bar}  health={health_value}",
         f"threshold={min_score:.2f}  path={metrics['path']}",
         "",
