@@ -98,10 +98,19 @@ def compute(report: RepoMetricsReport) -> ScoreReport:
         return ScoreReport(category_scores={}, weights_used={}, final_score=0.0)
 
     available_weight = sum(BASE_WEIGHTS[name] for name in category_scores)
-    weights_used = {
-        name: _round(BASE_WEIGHTS[name] * 100.0 / available_weight)
-        for name in category_scores
-    }
+    sorted_names = sorted(
+        category_scores.keys(),
+        key=lambda name: (-BASE_WEIGHTS[name], name),
+    )
+    weights_used: dict[str, float] = {}
+    remainder = 100.0
+    for index, name in enumerate(sorted_names):
+        if index == len(sorted_names) - 1:
+            weights_used[name] = _round(remainder)
+            break
+        normalized = _round(BASE_WEIGHTS[name] * 100.0 / available_weight)
+        weights_used[name] = normalized
+        remainder -= normalized
     final = 0.0
     for name, score in category_scores.items():
         final += score * (weights_used[name] / 100.0)

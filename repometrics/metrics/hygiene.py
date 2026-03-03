@@ -41,13 +41,21 @@ def _confirm_match(module: Path, candidate: Path) -> bool:
     if not sys.stdin.isatty():
         return False
     prompt = f"Use test match {candidate} for module {module}? [y/N]: "
-    answer = input(prompt).strip().lower()
+    try:
+        answer = input(prompt).strip().lower()
+    except EOFError:
+        return False
     return answer in {"y", "yes"}
 
 
 def analyze(path: Path, config: ScanConfig) -> CategoryResult[HygieneMetrics]:
     files = walk_files(path)
     warnings: list[str] = []
+    if config.confirm_test_matches and not sys.stdin.isatty():
+        warnings.append(
+            "hygiene: --confirm-test-matches requested in non-interactive mode; "
+            "falling back to suggestions only"
+        )
 
     py_files = [file_path for file_path in files if file_path.suffix == ".py"]
     test_files = [file_path for file_path in py_files if _is_test_file(file_path, path)]
@@ -71,10 +79,15 @@ def analyze(path: Path, config: ScanConfig) -> CategoryResult[HygieneMetrics]:
         todo_markers_count += len(_TODO_PATTERN.findall(text))
 
     matched_modules: set[Path] = set()
+    used_tests: set[Path] = set()
     test_name_set = {test.name for test in test_files}
     for code_path in code_files:
         if f"test_{code_path.stem}.py" in test_name_set:
             matched_modules.add(code_path)
+            for test in test_files:
+                if test.name == f"test_{code_path.stem}.py":
+                    used_tests.add(test)
+                    break
 
     fuzzy_candidates = [test for test in test_files if not test.name.startswith("test_")]
     for code_path in code_files:
@@ -84,6 +97,7 @@ def analyze(path: Path, config: ScanConfig) -> CategoryResult[HygieneMetrics]:
             (
                 (_similarity(code_path.stem, test.stem), test)
                 for test in fuzzy_candidates
+                if test not in used_tests
             ),
             key=lambda item: (-item[0], str(item[1])),
         )
@@ -92,12 +106,14 @@ def analyze(path: Path, config: ScanConfig) -> CategoryResult[HygieneMetrics]:
         best_score, best_test = scored[0]
         if config.confirm_test_matches and _confirm_match(code_path, best_test):
             matched_modules.add(code_path)
+            used_tests.add(best_test)
             continue
         warnings.append(
             "hygiene: ambiguous test match suggestion "
             f"{best_test.relative_to(path)} -> {code_path.relative_to(path)} "
             f"(score={best_score:.2f}); rerun with --confirm-test-matches"
         )
+        used_tests.add(best_test)
 
     modules_without_matching_test_count = len(code_files) - len(matched_modules)
     test_to_code_ratio = len(test_files) / len(code_files) if code_files else 0.0
