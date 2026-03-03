@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.2 - 2026-03-03
+
+- Follow-up release packaging cut for latest CLI UX/formatting refinements.
+- Maintains compact default output, verbose full-stats mode, and aligned score table.
+
 ## 0.2.1 - 2026-03-03
 
 - Refined compact CLI output formatting and alignment.
