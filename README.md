@@ -41,6 +41,14 @@ Text modes:
 - `--verbose`: full stats view
 - `--json`: programmatic full detail
 
+## What The Points Mean
+
+- Structure: folder/file layout quality and balance.
+- Dependencies: import graph health (cycles, density, isolation).
+- Git: recent commit activity and contributor spread.
+- Hygiene: tests coverage mapping, TODO noise, duplication, binary footprint.
+- Final score: weighted average across available categories.
+
 ## Exit Codes
 
 - `0`: healthy (`final_score >= min_score`)
